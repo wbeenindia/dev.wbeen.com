@@ -1,0 +1,497 @@
+openapi: 3.0.3
+info:
+  title: WBeen Domain Reseller API
+  version: 1.0 beta
+  description: >
+    API documentation for the WBeen Domain Reseller API.
+    
+    All endpoints here ultimately route to `POST /auth.php`. For the purpose of clear documentation, they have been separated into distinct operations.
+    Ensure that `apikey` and `email` are provided in the authentication headers/parameters.
+servers:
+  - url: https://secure.wbeen.com
+security:
+  - ApiKeyAuth: []
+    EmailAuth: []
+tags:
+  - name: Registration & Transfer
+    description: Endpoints for registering, transferring, and renewing domains.
+  - name: Domain Management
+    description: Endpoints for managing nameservers, locks, privacy, and contact details.
+  - name: Pricing
+    description: Endpoints for fetching TLD pricing.
+  - name: Account & System
+    description: Endpoints for checking credits, connection ping, and synchronized domains.
+paths:
+  /auth.php?action=register:
+    post:
+      tags:
+        - Registration & Transfer
+      summary: Register a new domain
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain, regperiod, firstname, lastname, address1, city, state, postcode, country, fullphonenumber, phonenumber, email]
+              properties:
+                action:
+                  type: string
+                  default: register
+                  description: "Must be set to `register`"
+                domain:
+                  type: string
+                regperiod:
+                  type: integer
+                  description: Registration period in years.
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                companyname:
+                  type: string
+                address1:
+                  type: string
+                address2:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                postcode:
+                  type: string
+                country:
+                  type: string
+                fullphonenumber:
+                  type: string
+                phonenumber:
+                  type: string
+                  description: "Same as fullphonenumber"
+                email:
+                  type: string
+                ns1:
+                  type: string
+                ns2:
+                  type: string
+                ns3:
+                  type: string
+                ns4:
+                  type: string
+                ns5:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=transfer:
+    post:
+      tags:
+        - Registration & Transfer
+      summary: Transfer an existing domain
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain, transfersecret, eppcode, regperiod, firstname, lastname, address1, city, state, postcode, country, fullphonenumber, phonenumber, email]
+              properties:
+                action:
+                  type: string
+                  default: transfer
+                  description: "Must be set to `transfer`"
+                domain:
+                  type: string
+                transfersecret:
+                  type: string
+                eppcode:
+                  type: string
+                  description: "Same as transfersecret"
+                regperiod:
+                  type: integer
+                  description: Registration period in years.
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                companyname:
+                  type: string
+                address1:
+                  type: string
+                address2:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                postcode:
+                  type: string
+                country:
+                  type: string
+                fullphonenumber:
+                  type: string
+                phonenumber:
+                  type: string
+                email:
+                  type: string
+                ns1:
+                  type: string
+                ns2:
+                  type: string
+                ns3:
+                  type: string
+                ns4:
+                  type: string
+                ns5:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=renew:
+    post:
+      tags:
+        - Registration & Transfer
+      summary: Renew a domain
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain, regperiod]
+              properties:
+                action:
+                  type: string
+                  default: renew
+                  description: "Must be set to `renew`"
+                domain:
+                  type: string
+                regperiod:
+                  type: integer
+                  description: Registration period in years.
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=getNameServers:
+    post:
+      tags:
+        - Domain Management
+      summary: Get Nameservers for a domain
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain]
+              properties:
+                action:
+                  type: string
+                  default: getNameServers
+                  description: "Must be set to `getNameServers`"
+                domain:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=updateNameServers:
+    post:
+      tags:
+        - Domain Management
+      summary: Update Nameservers for a domain
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain]
+              properties:
+                action:
+                  type: string
+                  default: updateNameServers
+                  description: "Must be set to `updateNameServers`"
+                domain:
+                  type: string
+                ns1:
+                  type: string
+                ns2:
+                  type: string
+                ns3:
+                  type: string
+                ns4:
+                  type: string
+                ns5:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=updateLock:
+    post:
+      tags:
+        - Domain Management
+      summary: Update Registrar Lock
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain, lock]
+              properties:
+                action:
+                  type: string
+                  default: updateLock
+                  description: "Must be set to `updateLock`"
+                domain:
+                  type: string
+                lock:
+                  type: integer
+                  enum: [0, 1]
+                  description: 1 to lock, 0 to unlock
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=lockStatus:
+    post:
+      tags:
+        - Domain Management
+      summary: Get Registrar Lock Status
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain]
+              properties:
+                action:
+                  type: string
+                  default: lockStatus
+                  description: "Must be set to `lockStatus`"
+                domain:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=updatePrivacy:
+    post:
+      tags:
+        - Domain Management
+      summary: Update ID Protection (Privacy)
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain, protectenable]
+              properties:
+                action:
+                  type: string
+                  default: updatePrivacy
+                  description: "Must be set to `updatePrivacy`"
+                domain:
+                  type: string
+                protectenable:
+                  type: integer
+                  enum: [0, 1]
+                  description: 1 to enable, 0 to disable
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=getEPP:
+    post:
+      tags:
+        - Domain Management
+      summary: Get EPP Code
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain]
+              properties:
+                action:
+                  type: string
+                  default: getEPP
+                  description: "Must be set to `getEPP`"
+                domain:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=getContactDetails:
+    post:
+      tags:
+        - Domain Management
+      summary: Get Contact Details
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain]
+              properties:
+                action:
+                  type: string
+                  default: getContactDetails
+                  description: "Must be set to `getContactDetails`"
+                domain:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=saveContactDetails:
+    post:
+      tags:
+        - Domain Management
+      summary: Save Contact Details
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action, domain, contactdetails]
+              properties:
+                action:
+                  type: string
+                  default: saveContactDetails
+                  description: "Must be set to `saveContactDetails`"
+                domain:
+                  type: string
+                contactdetails:
+                  type: string
+                  description: JSON encoded contact details
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=GetTldPricing:
+    post:
+      tags:
+        - Pricing
+      summary: Get TLD Pricing Matrix
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  default: GetTldPricing
+                  description: "Must be set to `GetTldPricing`"
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=credit:
+    post:
+      tags:
+        - Account & System
+      summary: Get Account Credit Balance
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  default: credit
+                  description: "Must be set to `credit`"
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=ping:
+    post:
+      tags:
+        - Account & System
+      summary: Ping API
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  default: ping
+                  description: "Must be set to `ping`"
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+  /auth.php?action=domains:
+    post:
+      tags:
+        - Account & System
+      summary: List all domains synced with the account
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  default: domains
+                  description: "Must be set to `domains`"
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: apikey
+      description: Your WBeen API Key
+    EmailAuth:
+      type: apiKey
+      in: query
+      name: email
+      description: Your WBeen Account Email
+  responses:
+    SuccessResponse:
+      description: API Response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              result:
+                type: string
+                example: success
+              data:
+                type: object
+                description: The response payload.
+              message:
+                type: string
+                description: Error message if result is not success.
+              balance:
+                type: string
+                description: Returned for the `credit` action.
